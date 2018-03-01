@@ -43,7 +43,7 @@ NULL
 #' @export
 #'
 SSL=function(method=c("MMSE","SMA","ES"),phi,L,p,alpha,SL)
-{ .Deprecated("bullwhipgame", package = "SSL")
+{ .Deprecated("bullwhipgame", package = "pkgSCperf")
   z<- qnorm(SL, mean = 0, sd = 1)
   if (method=="MMSE"){ #Calculating the variance during the LT
     arma1<-ARMAtoMA(ar=phi, ma=0,L);

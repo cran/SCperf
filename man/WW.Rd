@@ -4,16 +4,16 @@
 \alias{WW}
 \title{The Wagner-Whitin algorithm}
 \usage{
-WW(x, a, h, method = c("forward", "backward"))
+WW(x, a, h, method = c("backward", "forward"))
 }
 \arguments{
 \item{x}{A numeric vector containing the demand per unit time}
 
-\item{a}{The set-up cost per unit and period}
+\item{a}{A numeric number for the set-up cost per unit and period}
 
-\item{h}{The holding cost per unit and period}
+\item{h}{A numeric number for the holding cost per unit and period}
 
-\item{method}{Character string specifing which algorithm to use, must be "backward" (default) or "forward"}
+\item{method}{Character string specifing which algorithm to use: "backward" (default) or "forward"}
 }
 \description{
 \code{WW} implements the Wagner-Whitin algorithm. Considering time-varying demand, the algorithm builds production
@@ -34,29 +34,31 @@ and no backlogging
 # winter season will be under way. However, this would necessitate holding seven of the airplanes in
 # inventory, at a cost of $200,000 per airplane per period, until their scheduled delivery times
 # (...) Management would like to determine theleast costly production schedule for filling
-# this order.
+# this order.}
+
 
 x  <- c(3,2,3,2)
 a  <- 2
 h  <- 0.2
 WW(x,a,h,method="backward")
 
+ \dontrun{
 # The total variable cost is $4.8 million (minimum value in the first raw). Since we have two
-# minimun values in positions 2 and 4, then we have the following solutions:
+# minimun values in the first raw (positions 2 and 4), we have the following solutions:
 # Solution 1:  Produce to cover demand until period 2, 5 airplanes. In period 3, new decision,
-# minimun value 2.4 in period 4. Then in period 3 produce to cover demand until period 4, 5
-# airplanes.
-# Solution 2: Produce to cover demand until period 4, 10 airplanes.
-
+# minimun value 2.4 in period 4 (third raw). Then in period 3 produce to cover demand until 
+# period 4, 5 airplanes.
+# Solution 2: Produce to cover demand until period 4, 10 airplanes.}
+ 
 WW(x,a,h,method="forward")
 
+ \dontrun{
 #The total variable cost is $4.8 million (minimum value in the last raw). Since we have two minimun
 # values in columns 1 and 3, the solutions are:
 # Solution 1: Produce in period 1 to cover demand until period 4, 10 airplanes.
 # Solution 2: Produce in period 3 to cover demand until period 4, 5 airplanes.In period 2, new
 # decision, minimun value 2.4 in raw 3. Then in period 1 produce to cover demand until
-# period 2, 5 airplanes.
-      }
+# period 2, 5 airplanes.}
 
 }
 \seealso{

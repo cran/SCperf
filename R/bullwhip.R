@@ -45,7 +45,7 @@ NULL
 #' @export
 #'
 bullwhip<-function(method=c("MMSE","SMA","ES"),phi,L,p,alpha)
-{ .Deprecated("bullwhipgame", msg = "Deprecated function. Use bullwhipgame package instead")
+{ .Deprecated("bullwhipgame", package="pkgSCperf")
   method <- match.arg(method)
   if (L==0){cat("L is at least one, the review period, ...\n")
   }

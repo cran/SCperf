@@ -50,7 +50,7 @@ NULL
 #'
 SCperf <-
   function(phi,theta,L=L,SL=0.95)
-  {  .Deprecated("bullwhipgame", package="SCperf")
+  {  .Deprecated("bullwhipgame", package="pkgSCperf")
     if (L==0){cat("L is at least the review period which is one, ...\n")
     }
     else

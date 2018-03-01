@@ -2,7 +2,7 @@ Package: SCperf
 Type: Package
 Title: Functions for Planning and Managing Inventories in a Supply
         Chain
-Version: 1.1.0
+Version: 1.1.1
 Author: Marlene Marchena
 Maintainer: Marlene Marchena <marchenamarlene@gmail.com>
 Description: Implements different inventory models, the bullwhip effect and other supply chain performance variables. Marchena Marlene (2010) <arXiv:1009.3977>.
@@ -12,6 +12,6 @@ LazyData: true
 Imports: stats
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2018-02-23 21:18:16 UTC; marlene
+Packaged: 2018-02-28 19:18:12 UTC; marlene
 Repository: CRAN
-Date/Publication: 2018-02-23 22:35:45 UTC
+Date/Publication: 2018-03-01 09:38:39 UTC

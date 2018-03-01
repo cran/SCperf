@@ -5,9 +5,9 @@
 #' and no backlogging
 #'
 #' @param x  A numeric vector containing the demand per unit time
-#' @param a  The set-up cost per unit and period
-#' @param h  The holding cost per unit and period
-#' @param method  Character string specifing which algorithm to use, must be "backward" (default) or "forward"
+#' @param a  A numeric number for the set-up cost per unit and period
+#' @param h  A numeric number for the holding cost per unit and period
+#' @param method  Character string specifing which algorithm to use: "backward" (default) or "forward"
 #'
 #' @seealso EOQ, EPQ, newsboy
 #'
@@ -25,41 +25,65 @@
 #' # winter season will be under way. However, this would necessitate holding seven of the airplanes in
 #' # inventory, at a cost of $200,000 per airplane per period, until their scheduled delivery times
 #' # (...) Management would like to determine theleast costly production schedule for filling
-#' # this order.
+#' # this order.}
+#' 
 #'
 #' x  <- c(3,2,3,2)
 #' a  <- 2
 #' h  <- 0.2
 #' WW(x,a,h,method="backward")
-#'
+#' 
+#'  \dontrun{
 #' # The total variable cost is $4.8 million (minimum value in the first raw). Since we have two
-#' # minimun values in positions 2 and 4, then we have the following solutions:
+#' # minimun values in the first raw (positions 2 and 4), we have the following solutions:
 #' # Solution 1:  Produce to cover demand until period 2, 5 airplanes. In period 3, new decision,
-#' # minimun value 2.4 in period 4. Then in period 3 produce to cover demand until period 4, 5
-#' # airplanes.
-#' # Solution 2: Produce to cover demand until period 4, 10 airplanes.
-#'
+#' # minimun value 2.4 in period 4 (third raw). Then in period 3 produce to cover demand until 
+#' # period 4, 5 airplanes.
+#' # Solution 2: Produce to cover demand until period 4, 10 airplanes.}
+#'  
 #' WW(x,a,h,method="forward")
 #'
+#'  \dontrun{
 #' #The total variable cost is $4.8 million (minimum value in the last raw). Since we have two minimun
 #' # values in columns 1 and 3, the solutions are:
 #' # Solution 1: Produce in period 1 to cover demand until period 4, 10 airplanes.
 #' # Solution 2: Produce in period 3 to cover demand until period 4, 5 airplanes.In period 2, new
 #' # decision, minimun value 2.4 in raw 3. Then in period 1 produce to cover demand until
-#' # period 2, 5 airplanes.
-#'       }
+#' # period 2, 5 airplanes.}
 #'
 #' @export
-#'
-WW <- function(x,a,h,method=c("forward","backward")) UseMethod("WW")
-
-WW.default <-function(x,a,h,method=c("forward","backward"))
+WW <- function(x,a,h,method=c("backward", "forward")) {
+  UseMethod("WW")
+}
+#' @export
+WW.default <-function(x,a,h,method=c("backward", "forward"))
 { method <- match.arg(method)
 n  <- length(x) #Calculating the output matrix (costs matrix)
-a  <- rep(a,n)
-h  <- rep(h,n)
+a <- rep(a,n)
+h <- rep(h,n)
 CM<- matrix(NA,nrow=n,ncol=n)
-if (method=="forward"){CM<- matrix(NA,nrow=n,ncol=n)
+if (method=="backward"){V<- matrix(NA,nrow=1,ncol=n)
+hc<-matrix(NA,nrow=n,ncol=n)
+
+for(i in (n-1):1){ CM[n,n]<- a[n]
+V[n]<- CM[n,n]
+V[n+1]<- 0
+for(j in i:n){ if(j==i){  CM[i,j]<- V[j+1]+a[i]
+}
+  else { total = 0;
+  for (k in i:(j-1)){hc<-sum(h[i:k])*x[k+1]
+  total <- total+hc
+  CM[i,j]<- V[j+1]+a[i]+total
+  }
+  }
+}
+V[i]<-min(CM[i,],na.rm=TRUE)
+}
+v<-V[-(n+1)];
+TC<-V[1];
+}
+else {
+CM<- matrix(NA,nrow=n,ncol=n)
 f<- matrix(NA,nrow=1,ncol=n+1)
 hc<-matrix(NA,nrow=n,ncol=n)
 
@@ -83,26 +107,6 @@ f[t+1]<-min(CM[t,],na.rm=TRUE)
 v=f[-1];
 TC<- f[n+1];
 }
-else {V<- matrix(NA,nrow=1,ncol=n)
-hc<-matrix(NA,nrow=n,ncol=n)
-
-for(i in (n-1):1){ CM[n,n]<- a[n]
-V[n]<- CM[n,n]
-V[n+1]<- 0
-for(j in i:n){ if(j==i){  CM[i,j]<- V[j+1]+a[i]
-}
-  else { total = 0;
-  for (k in i:(j-1)){hc<-sum(h[i:k])*x[k+1]
-  total <- total+hc
-  CM[i,j]<- V[j+1]+a[i]+total
-  }
-  }
-}
-V[i]<-min(CM[i,],na.rm=TRUE)
-}
-v<-V[-(n+1)];
-TC<-V[1];
-}
 s <- apply(CM, 1, function(y) which(y == min(y, na.rm = TRUE)));
 Cuts<-sapply(s, paste, collapse = ' or ');
 
@@ -110,7 +114,7 @@ ww<-list(TVC=TC, Jt = Cuts, Solution=CM, call=sys.call())
 class(ww)<-"WW"
 ww
 }
-
+#' @export
 print.WW <- function(x, ...)
 {
   cat("Call:\n")
@@ -122,8 +126,3 @@ print.WW <- function(x, ...)
   cat("\nJt:\n")
   print(x$Jt)
 }
-
-
-
-
-
